@@ -13,4 +13,5 @@ export interface ListProductsResponse {
   data: Product[];
   limit: number;
   page: number;
+  total: number;
 }
