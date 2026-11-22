@@ -10,10 +10,7 @@ import (
 )
 
 func DatabaseURL() (string, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return "", err
-	}
+	_ = godotenv.Load()
 
 	if value := os.Getenv("DATABASE_URL"); value != "" {
 		return value, nil
