@@ -12,3 +12,9 @@ type ProductResponse struct {
 	CreatedAt      time.Time  `json:"created_at"`
 	LastMovementAt *time.Time `json:"last_movement_at"`
 }
+
+type CreateProductRequest struct {
+	SKU   string `json:"sku"`
+	Name  string `json:"name"`
+	Price int    `json:"price"`
+}

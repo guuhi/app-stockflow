@@ -4,10 +4,11 @@ import (
 	"context"
 	"stockflow/internal/dto"
 	"stockflow/internal/entity"
+	"stockflow/internal/shared"
 )
 
 type ProductRepository interface {
-	ListProducts(ctx context.Context) ([]entity.Product, error)
+	ListProducts(ctx context.Context, queryParams shared.ProductQueryParams) ([]entity.Product, error)
 }
 
 type ProductUsecase struct {
@@ -18,8 +19,8 @@ func NewProductUsecase(repo ProductRepository) *ProductUsecase {
 	return &ProductUsecase{repo: repo}
 }
 
-func (uc *ProductUsecase) ListProducts(ctx context.Context) ([]dto.ProductResponse, error) {
-	products, err := uc.repo.ListProducts(ctx)
+func (uc *ProductUsecase) ListProducts(ctx context.Context, queryParams shared.ProductQueryParams) ([]dto.ProductResponse, error) {
+	products, err := uc.repo.ListProducts(ctx, queryParams)
 	if err != nil {
 		return nil, err
 	}
