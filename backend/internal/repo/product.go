@@ -69,3 +69,28 @@ func (r *ProductRepository) ListProducts(ctx context.Context, queryParams shared
 
 	return result, nil
 }
+
+func (r *ProductRepository) CreateProduct(ctx context.Context, in entity.Product) (entity.Product, error) {
+	query := `
+		INSERT INTO products (sku, name, price) 
+		VALUES ($1, $2, $3)
+	`
+	var created entity.Product
+	err := r.db.GetContext(ctx, &created, query, in.SKU, in.Name, in.Price)
+	if err != nil {
+		return entity.Product{}, apperror.ErrDatabaseQueryFailed.Wrap(err)
+	}
+
+	return created, nil
+}
+
+func (r *ProductRepository) SKUExists(ctx context.Context, sku string) (bool, error) {
+	query := `
+		SELECT EXISTS(SELECT 1 FROM products WHERE sku = $1)
+	`
+	var found bool
+	if err := r.db.GetContext(ctx, &found, query, sku); err != nil {
+		return false, apperror.ErrDatabaseQueryFailed.Wrap(err)
+	}
+	return found, nil
+}
