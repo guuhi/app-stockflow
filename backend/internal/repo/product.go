@@ -27,7 +27,7 @@ func (r *ProductRepository) ListProducts(ctx context.Context, queryParams shared
 	args := []any{}
 
 	query := `
-		SELECT p.id, p.sku, p.name, p.price, p.stock, p.is_active, p.created_at, COALESCE(s.created_at, p.created_at) as last_movement_at
+		SELECT p.id, p.sku, p.name, p.price, p.stock, p.is_active, p.created_at, COALESCE(s.created_at, p.created_at) as last_movement_at, COUNT(*) OVER() AS total
 		FROM products p
 		LEFT JOIN stock_movements s ON s.product_id = p.id
 	`
@@ -68,18 +68,4 @@ func (r *ProductRepository) ListProducts(ctx context.Context, queryParams shared
 	}
 
 	return result, nil
-}
-
-func (r *ProductRepository) GetProductsCount(ctx context.Context) (int, error) {
-	query := `
-		SELECT COUNT(*) FROM products
-	`
-
-	var total int
-	err := r.db.GetContext(ctx, &total, query)
-	if err != nil {
-		return 0, apperror.ErrDatabaseQueryFailed.Wrap(err)
-	}
-
-	return total, nil
 }

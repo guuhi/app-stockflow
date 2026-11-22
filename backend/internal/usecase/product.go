@@ -9,7 +9,6 @@ import (
 
 type ProductRepository interface {
 	ListProducts(ctx context.Context, queryParams shared.ProductQueryParams) ([]entity.Product, error)
-	GetProductsCount(ctx context.Context) (int, error)
 }
 
 type ProductUsecase struct {
@@ -26,9 +25,11 @@ func (uc *ProductUsecase) ListProducts(ctx context.Context, queryParams shared.P
 		return nil, 0, err
 	}
 
-	totalProducts, err := uc.repo.GetProductsCount(ctx)
-	if err != nil {
-		return nil, 0, err
+	var total int
+	if len(products) == 0 {
+		total = 0
+	} else {
+		total = products[0].Total
 	}
 
 	responses := make([]dto.ProductResponse, len(products))
@@ -36,7 +37,7 @@ func (uc *ProductUsecase) ListProducts(ctx context.Context, queryParams shared.P
 		responses[i] = productToDTO(product)
 	}
 
-	return responses, totalProducts, nil
+	return responses, total, nil
 }
 
 func productToDTO(p entity.Product) dto.ProductResponse {

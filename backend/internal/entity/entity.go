@@ -11,4 +11,5 @@ type Product struct {
 	IsActive       bool       `db:"is_active"`
 	CreatedAt      time.Time  `db:"created_at"`
 	LastMovementAt *time.Time `db:"last_movement_at"`
+	Total          int
 }

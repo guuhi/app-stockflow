@@ -22,7 +22,7 @@ function ProductsPage() {
   const { data, error, isLoading } = useSWR<ListProductsResponse>(key, fetcher);
 
   const page: number = data ? data.page : 1;
-  const total: number = data ? data.total : 1;
+  const total: number = data ? data.total : 0;
   const products: Product[] = data ? data.data : [];
 
   const productCards = products.map((p) => (
@@ -53,13 +53,15 @@ function ProductsPage() {
       {!isLoading && !error && (
         <div>
           <div className="grid grid-cols-2 gap-4">{productCards}</div>
-          <div className="py-4">
-            <PaginationBar
-              currentPage={page}
-              totalPages={total}
-              onPageChange={setSearchParams}
-            />
-          </div>
+          {total !== 0 && (
+            <div className="py-4">
+              <PaginationBar
+                currentPage={page}
+                totalPages={total}
+                onPageChange={setSearchParams}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>
