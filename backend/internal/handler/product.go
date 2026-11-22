@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"math"
 	"net/http"
 	"stockflow/internal/apperror"
 	"stockflow/internal/dto"
@@ -13,7 +14,7 @@ import (
 )
 
 type ProductUsecase interface {
-	ListProducts(ctx context.Context, queryParams shared.ProductQueryParams) ([]dto.ProductResponse, error)
+	ListProducts(ctx context.Context, queryParams shared.ProductQueryParams) ([]dto.ProductResponse, int, error)
 }
 
 type ProductHandler struct {
@@ -56,16 +57,18 @@ func (h *ProductHandler) ListProducts(c *gin.Context) {
 	queryParams := shared.ProductQueryParams{
 		Search: search,
 		Filter: filter,
-		Page: page,
-		Limit: limit,
+		Page:   page,
+		Limit:  limit,
 		Offset: offset,
 	}
 
-	products, err := h.uc.ListProducts(c.Request.Context(), queryParams)
+	products, totalProducts, err := h.uc.ListProducts(c.Request.Context(), queryParams)
 	if err != nil {
 		_ = c.Error(err)
 		return
 	}
 
-	RespondDataWithPagination(c, http.StatusOK, products, page, limit)
+	total := int(math.Ceil(float64(totalProducts) / float64(limit)))
+
+	RespondDataWithPagination(c, http.StatusOK, products, page, limit, total)
 }

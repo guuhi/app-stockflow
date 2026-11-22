@@ -21,8 +21,8 @@ func RespondData(c *gin.Context, status int, data any) {
 	c.JSON(status, gin.H{"data": data})
 }
 
-func RespondDataWithPagination(c *gin.Context, status int, data any, page int, limit int) {
-	c.JSON(status, gin.H{"data": data, "page": page, "limit": limit})
+func RespondDataWithPagination(c *gin.Context, status int, data any, page int, limit int, total int) {
+	c.JSON(status, gin.H{"data": data, "page": page, "limit": limit, "total": total})
 }
 
 func RespondError(c *gin.Context, status int, code apperror.Code, message string, fields map[string]string) {

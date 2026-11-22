@@ -1,11 +1,11 @@
 package shared
 
 type ProductQueryParams struct {
-	Search   string
-	Filter   string
-	Page     int
-	Limit int
-	Offset   int
+	Search string
+	Filter string
+	Page   int
+	Limit  int
+	Offset int
 }
 
 var ValidFilters = map[string]bool{
